@@ -34,8 +34,11 @@ profileRouter.patch("/editProfile", userAuth, async (req, res) => {
   }
 });
 
+
+
 profileRouter.patch("/resetpassword", userAuth, async (req, res) => {
   try {
+    
     const { oldPassword, newPassword } = req.body;
     const loggedInUser = req.user;
 
