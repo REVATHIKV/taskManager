@@ -14,7 +14,12 @@ const validateLogin = (req) => {
 
 const validateEditProfile = (req) => {};
 
-const validateTask = (req) => {};
+const validateTask = (req) => {
+    const {taskName, assignedTo} = req.body; 
+    if(!taskName || !assignedTo) {
+        throw new Error (" Invalid task data, enter all required fields !! ")
+    }
+};
 
 module.exports = {
   validateSignup,

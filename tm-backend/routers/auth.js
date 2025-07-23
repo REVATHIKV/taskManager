@@ -8,14 +8,14 @@ const jwt = require("jsonwebtoken");
 authRouter.post("/signup", async (req, res) => {
   try {
     validateSignup(req);
+    const { firstName, lastName, email, password, role } = req.body;
 
-    const emailExists = await User.findOne({email:email}) ;
+    const emailExists = await User.findOne({ email: email });
 
-    if(emailExists){
-      throw new Error("Email already exists !! ")
+    if (emailExists) {
+      throw new Error("Email already exists !! ");
     }
 
-    const { firstName, lastName, email, password } = req.body;
     const passwordHash = await bcrypt.hash(password, 10);
 
     const user = new User({
@@ -23,12 +23,13 @@ authRouter.post("/signup", async (req, res) => {
       lastName,
       email,
       password: passwordHash,
+      role: role || "user",
     });
 
     const savedData = await user.save();
     res.json({ message: "User signedup successfully", data: savedData });
   } catch (err) {
-    res.status(400).json({ message: "something went wrong " + err.message });
+    res.status(400).json({ message:   err.message });
   }
 });
 authRouter.post("/login", async (req, res) => {
@@ -47,19 +48,18 @@ authRouter.post("/login", async (req, res) => {
         process.env.JWT_SECRET,
         { expiresIn: "1d" }
       );
-      res.cookie("token",token, {expires: new Date(Date.now() + 900000)});
+      res.cookie("token", token, {  expires: new Date(Date.now() + 24 * 60 * 60 * 1000) });
       res.json({ message: "User loggedIn successfully", data: validUser });
     } else {
       throw new Error("Invalid Credentials");
     }
   } catch (err) {
-    res.status(400).json({ message: "something went wrong " + err.message });
+    res.status(400).json({ message:   err.message });
   }
 });
- authRouter.post('/logout',(req,res) => {
-  res.cookie('token','', {expiresIn:Date.now()})
-  res.json({message:"LoggedOut successfully"})
-})
-
+authRouter.post("/logout", (req, res) => {
+  res.cookie("token", "", { expiresIn: Date.now() });
+  res.json({ message: "LoggedOut successfully" });
+});
 
 module.exports = authRouter;

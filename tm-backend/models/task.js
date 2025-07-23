@@ -9,8 +9,19 @@ const taskSchema = mongoose.Schema({
       },
       message: "Invalid Status",
     },
+    default:"Pending",
   },
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-});
+  assignedTo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+},  { timestamps: true }
+);
 
 module.exports = mongoose.model("Task", taskSchema);
